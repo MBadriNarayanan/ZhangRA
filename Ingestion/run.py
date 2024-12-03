@@ -49,7 +49,14 @@ class IngestDocument:
         unique_id = str(uuid.uuid4())
         time_stamp = datetime.datetime.now(pytz.timezone("US/Central"))
         time_stamp = time_stamp.strftime("%m_%d_%y_%H_%M_%S")
-        self.identifier = "{}_{}".format(time_stamp, unique_id)
+        self.identifier = "{}_{}_{}_{}_{}_{}".format(
+            time_stamp,
+            unique_id,
+            self.embedding_model_name,
+            self.chunking_strategy,
+            self.chunk_size,
+            self.chunk_overlap,
+        )
 
         if self.chunking_strategy == "RecursiveCharacterTextSplitter":
             self.text_splitter = RecursiveCharacterTextSplitter(
