@@ -3,3 +3,4 @@ Scripts/__pycache__
 Ingestion/working_environment/
 Ingestion/input/
 Ingestion/output/
+.env
