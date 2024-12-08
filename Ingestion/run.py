@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import flywheel
 import logging
 import os
 import pytz
@@ -233,81 +234,94 @@ class IngestDocument:
             print("Error: {}".format(error))
 
 
-def get_args():
-    """
-    Parse command-line arguments.
+# def get_args():
+#     """
+#     Parse command-line arguments.
 
-    Returns:
-        Parsed arguments
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--file_path",
-        type=str,
-        default="Ingestion/input/report.txt",
-        help="File path of your document",
-    )
-    parser.add_argument(
-        "--embedding_model_name",
-        type=str,
-        default="nomic-embed-text",
-        help="Embedding model supported by Ollama to create the embeddings.",
-    )
-    parser.add_argument(
-        "--embedding_batch_size",
-        type=int,
-        default=100,
-        help="Batch size to generate the embeddings.",
-    )
-    parser.add_argument(
-        "--chunking_strategy",
-        type=str,
-        default="RecursiveCharacterTextSplitter",
-        choices=["RecursiveCharacterTextSplitter"],
-        help="Chunking Strategy to be used to generate the embeddings.",
-    )
-    parser.add_argument(
-        "--chunk_size",
-        type=int,
-        default=512,
-        help="Maximum size of each chunk while splitting the document.",
-    )
-    parser.add_argument(
-        "--chunk_overlap",
-        type=int,
-        default=100,
-        help="The overlap size between consecutive chunks.",
-    )
-    parser.add_argument(
-        "--output_dir",
-        type=str,
-        default="output",
-        help="Output directory to save the embeddings.",
-    )
-    args = parser.parse_args()
-    return args
+#     Returns:
+#         Parsed arguments
+#     """
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument(
+#         "--file_path",
+#         type=str,
+#         default="Ingestion/input/report.txt",
+#         help="File path of the document to be ingested.",
+#     )
+#     parser.add_argument(
+#         "--embedding_model_name",
+#         type=str,
+#         default="nomic-embed-text",
+#         help="Embedding model supported by Ollama to create the embeddings.",
+#     )
+#     parser.add_argument(
+#         "--embedding_batch_size",
+#         type=int,
+#         default=100,
+#         help="Batch size to generate the embeddings.",
+#     )
+#     parser.add_argument(
+#         "--chunking_strategy",
+#         type=str,
+#         default="RecursiveCharacterTextSplitter",
+#         choices=["RecursiveCharacterTextSplitter"],
+#         help="Chunking Strategy to be used to generate the embeddings.",
+#     )
+#     parser.add_argument(
+#         "--chunk_size",
+#         type=int,
+#         default=512,
+#         help="Maximum size of each chunk while splitting the document.",
+#     )
+#     parser.add_argument(
+#         "--chunk_overlap",
+#         type=int,
+#         default=100,
+#         help="The overlap window between consecutive chunks.",
+#     )
+#     parser.add_argument(
+#         "--output_dir",
+#         type=str,
+#         default="output",
+#         help="Output directory to save the embeddings.",
+#     )
+#     args = parser.parse_args()
+#     return args
 
 
 if __name__ == "__main__":
     print("\n-------------------------------------")
     print("Ingesting the document!")
-    args = get_args()
-    print("Arguments: {}".format(vars(args)))
+    # args = get_args()
+    # print("Arguments: {}".format(vars(args)))
+
+    # ingestion = IngestDocument(
+    #     embedding_model_name=args.embedding_model_name,
+    #     embedding_batch_size=args.embedding_batch_size,
+    #     chunking_strategy=args.chunking_strategy,
+    #     chunk_size=args.chunk_size,
+    #     chunk_overlap=args.chunk_overlap,
+    #     output_dir=args.output_dir,
+    # )
+
+    context = flywheel.GearContext()
+    config = context.config
 
     ingestion = IngestDocument(
-        embedding_model_name=args.embedding_model_name,
-        embedding_batch_size=args.embedding_batch_size,
-        chunking_strategy=args.chunking_strategy,
-        chunk_size=args.chunk_size,
-        chunk_overlap=args.chunk_overlap,
-        output_dir=args.output_dir,
+        embedding_model_name=config["embedding_model_name"],
+        embedding_batch_size=config["embedding_batch_size"],
+        chunking_strategy=config["chunking_strategy"],
+        chunk_size=config["chunk_size"],
+        chunk_overlap=config["chunk_overlap"],
+        output_dir=config["output_dir"],
     )
 
     ingestion.logger.info("-------------------------------------")
     ingestion.logger.info("Ingesting the document!")
-    ingestion.logger.info("Arguments: {}".format(vars(args)))
+    # ingestion.logger.info("Arguments: {}".format(vars(args)))
 
-    ingestion.ingest_document(file_path=args.file_path)
+    # ingestion.ingest_document(file_path=file_path)
+    ingestion.ingest_document(file_path=context.get_input_path("document_file"))
 
     ingestion.logger.info("Document has been ingested successfully!")
     ingestion.logger.info("-------------------------------------")
