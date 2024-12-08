@@ -1,6 +1,6 @@
-working_environment/
-Scripts/__pycache__
 Ingestion/working_environment/
 Ingestion/input/
 Ingestion/output/
-.env
+RAG/working_environment/
+RAG/data/
+RAG/Scripts/__pycache__
