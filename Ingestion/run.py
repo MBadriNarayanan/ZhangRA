@@ -44,8 +44,12 @@ class IngestDocument:
         self.embedding_batch_size = embedding_batch_size
 
         self.output_dir = output_dir
+        self.base_url = os.environ.get("OLLAMA_HOST", None)
 
-        self.embedding_model = OllamaEmbeddings(model=self.embedding_model_name)
+        self.embedding_model = OllamaEmbeddings(
+            model=self.embedding_model_name,
+            base_url=self.base_url,
+        )
 
         unique_id = str(uuid.uuid4())
         time_stamp = datetime.datetime.now(pytz.timezone("US/Central"))
