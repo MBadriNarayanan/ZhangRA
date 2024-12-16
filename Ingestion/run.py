@@ -324,7 +324,7 @@ if __name__ == "__main__":
     ingestion.logger.info("Ingesting the document!")
     # ingestion.logger.info("Arguments: {}".format(vars(args)))
 
-    # ingestion.ingest_document(file_path=file_path)
+    # ingestion.ingest_document(file_path=args.file_path)
     ingestion.ingest_document(file_path=context.get_input_path("document_file"))
 
     ingestion.logger.info("Document has been ingested successfully!")
